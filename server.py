@@ -4,19 +4,34 @@ import socketserver
 import random
 
 PORT = 8000
+
 class Handler(http.server.SimpleHTTPRequestHandler):
-    # def do_GET(arg):
-    #     return http.server.SimpleHTTPRequestHandler.do_GET(arg)
     
     def do_POST(self):
-        print("post req, looking for %s" % self.path)
-        self.send_response(200, ":)")
-        self.end_headers()
+        # print("post req for %s" % self.path)
 
-        reply_body = "%i" % (random.random()*100)
+
+        # python 3.9 -> no match case statement :(
+
+        reply_body = "nothing"
+        
+        if self.path == "/rand":
+            self.send_response(200, "Served :)")
+            self.end_headers()
+
+            reply_body = "%i" % (random.random()*100)
+        elif self.path == "/state":
+            self.send_response(200, "Served :)")
+            self.end_headers()
+
+            reply_body = "state"
+        else:
+            self.send_response(501, "Not a valid POST")
+            self.end_headers()
+
         self.wfile.write(reply_body.encode('utf-8'))
+
         return
-        # return http.server.SimpleHTTPRequestHandler.do_POST(arg)
 
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
