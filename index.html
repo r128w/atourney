@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Aura Tourney</title>
+    </head>
+    <body>
+        test page<br>
+        current number: <span id="output">0</span>
+        <script>
+            setInterval(()=>{
+                const req = new XMLHttpRequest()
+                req.open("POST", "/curnumber")
+                req.onload = ()=>{
+                    document.getElementById('output').textContent = req.responseText
+                }
+                req.send()
+            }, 1000)
+        </script>
+    </body>
+</html>
