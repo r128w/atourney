@@ -8,5 +8,5 @@ async function sendPost(url, data=null){
         options.body = data
         options.headers = {"Content-Type": "application/json"}
     }
-    return (await fetch(url, options)).json()
+    return (await fetch(url, options)).text()
 }

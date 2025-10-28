@@ -3,6 +3,8 @@ import socketserver
 
 import random
 
+from game.main import Game
+
 PORT = 8000
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -24,7 +26,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200, "Served :)")
             self.end_headers()
 
-            reply_body = "state"
+            reply_body = gameObject.getState()
         else:
             self.send_response(501, "Not a valid POST")
             self.end_headers()
@@ -33,7 +35,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         return
 
+gameObject = Game()
+gameObject.startLoop()
 
+# this file is always a main method :) never import it
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
 print("serving at port", PORT)
