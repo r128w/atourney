@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // add scripts
     for(var i = 0; i < scripts.length; i ++){
         const s = document.createElement('script')
-        s.src = "./js/" + scripts[i]
+        s.src = "./page/js/" + scripts[i]
         s.setAttribute("synthetic", "true")
         document.head.appendChild(s)
     }
