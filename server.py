@@ -28,17 +28,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
 
             reply_body = "%i" % (random.random()*100)
+
         elif self.path == "/state":
             self.send_response(200, "Served :)")
             self.end_headers()
 
             reply_body = gameObject.getState()
+
         elif self.path == "/player":
             self.send_response(200, "Understood")
             self.end_headers()
 
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
             print("player %s, x:%i, y:%i" % (data["name"], data["x"], data["y"]))
+
+        elif self.path == "/join":
+            self.send_response(200, "Understood")
+            self.end_headers()
+
+            data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            newID = gameObject.addPlayer(data["username"])
+            reply_body = str(newID)
+
+        elif self.path == "/leave":
+            self.send_response(200, "Understood")
+            self.end_headers()
+
+            data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            gameObject.removePlayer(data["id"])
 
         else:
             self.send_response(501, "Not a valid POST")

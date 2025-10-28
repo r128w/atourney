@@ -18,10 +18,24 @@ players.push(new Player("Anonymous", 100, 100))
 const sync = {
     username:"Anonymous",
     timer:null,
-    interval:400,
-    update:function(){
+    interval:4000,
+    id:null,
+    update:async function(){
         sendPost("/player", players[0])
+    },
+    connect:async function(){
+        let id = await sendPost("/join", {username:this.username})
+        this.id = Number(id)
+    },
+    disconnect:async function(){
+        await sendPost("/leave", {id:this.id})
+        this.id = null
+        clearTimeout(this.timer)
     }
 }
 
-sync.timer = setInterval(sync.update, sync.interval)
+sync.connect().then(()=>{
+    sync.timer = setInterval(sync.update, sync.interval)
+})
+
+window.addEventListener('unload', sync.disconnect)
