@@ -14,6 +14,10 @@ const canvas = {
         this.ele.height = this.ele.clientHeight
 
         this.clear()
+
+        for(var i = 0; i < players.length; i ++){
+            players[i].render(this.ctx)
+        }
     }
 }
 

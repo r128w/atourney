@@ -1,21 +1,38 @@
 
+from game.timer import setInterval
+
 class Game:
 
-    state = 0
+    framecount = 0
+
+    players = []
+
+    interval = None
 
     def getState(self): # python methods always take the object itself as first arg??? why
         # TODO
         self.iterate()
-        return str(self.state)
+        output = "Frames: %i" % self.framecount
+        return output
 
     def __init__(self):
-        self.state = 0
+        self.framecount = 0
         return
 
     def iterate(self):
-        self.state += 1
+        self.framecount += 1
+        return
+
+    def addPlayer(self, playerName):
+        return
+
+    def updatePlayer(self, playerName, newState):
+        return
+
+    def removePlayer(self, playerName):
         return
 
     def startLoop(self):
-        # TODO 60fps calling self.iterate()
+        # 30fps
+        self.interval = setInterval(self.iterate, 1/30)
         return

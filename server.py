@@ -5,6 +5,9 @@ import random
 
 from game.main import Game
 
+import signal
+import sys
+
 PORT = 8000
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -14,6 +17,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
         # python 3.9 -> no match case statement :(
+
+        # self.send_header("Access-Control-Allow-Origin", "*")
 
         reply_body = "nothing"
         
@@ -27,6 +32,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
 
             reply_body = gameObject.getState()
+        elif self.path == "/player":
+            self.send_response(200, "Understood")
+            self.end_headers()
+
+            data = self.rfile.read(int(self.headers['Content-Length']))
+            print(data)
         else:
             self.send_response(501, "Not a valid POST")
             self.end_headers()
@@ -42,4 +53,14 @@ gameObject.startLoop()
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
 print("serving at port", PORT)
-httpd.serve_forever()
+
+signal.signal(signal.SIGINT, signal.default_int_handler)
+
+
+try:
+    httpd.serve_forever()
+except KeyboardInterrupt:
+    print("Closing")
+    gameObject.interval.cancel()
+    httpd.shutdown()
+    sys.exit()
