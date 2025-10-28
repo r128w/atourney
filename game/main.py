@@ -26,16 +26,24 @@ class Game:
     def _isPresent(self, id):
         for obj in self.players:
             if obj.id == id:
-                return true
-        return false
+                return True
+        return False
+
+    def getPlayer(self, id):
+        if not self._isPresent(id):
+            return None
+        for obj in self.players:
+            if obj.id == id:
+                return obj
 
     def addPlayer(self, playerName):
         id = 0
         while self._isPresent(id):
             id+=1
-        self.players.append(Player(id, playerName, 100, 100))
+        newPlayer = Player(id, playerName, 100, 100)
+        self.players.append(newPlayer)
         print(" ======= ======= ======= CONNECT %i: %s" % (id, playerName))
-        return id
+        return newPlayer
 
     def updatePlayer(self, id, newState):
         return

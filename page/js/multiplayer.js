@@ -13,29 +13,34 @@ async function sendPost(url, data=null){
 let players = []
 // TODO load players from /state POST
 
-players.push(new Player("Anonymous", 100, 100))
-
 const sync = {
     username:"Anonymous",
     timer:null,
     interval:4000,
     id:null,
     update:async function(){
-        sendPost("/player", players[0])
+        console.log(sync.id)
+        await sendPost("/player", {p:players[0], id:sync.id})
     },
     connect:async function(){
-        let id = await sendPost("/join", {username:this.username})
-        this.id = Number(id)
+
+        clearTimeout(sync.timer)
+
+        let joinData = JSON.parse(await sendPost("/join", {username:sync.username}))
+        // console.log(joinData)
+        sync.id = joinData.id
+        players.push(new Player(this.username, joinData.x, joinData.y))
+
+        sync.timer = setInterval(sync.update, sync.interval)
     },
     disconnect:async function(){
-        await sendPost("/leave", {id:this.id})
-        this.id = null
-        clearTimeout(this.timer)
+        await sendPost("/leave", {id:sync.id})
+        // console.log(JSON.stringify({id:this.id}))
+        sync.id = null
+        clearTimeout(sync.timer)
     }
 }
 
-sync.connect().then(()=>{
-    sync.timer = setInterval(sync.update, sync.interval)
-})
+sync.connect()
 
 window.addEventListener('unload', sync.disconnect)

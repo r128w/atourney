@@ -39,22 +39,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200, "Understood")
             self.end_headers()
 
+            
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            print("player %s, x:%i, y:%i" % (data["name"], data["x"], data["y"]))
+
+            print("player data", json.dumps(data))
+
+            # print("player %s (%i), x:%i, y:%i" % (data["p"]["name"], data["id"], data["p"]["x"], data["p"]["y"]))
 
         elif self.path == "/join":
             self.send_response(200, "Understood")
             self.end_headers()
 
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            newID = gameObject.addPlayer(data["username"])
-            reply_body = str(newID)
+            newPlayer = gameObject.addPlayer(data["username"])
+
+            print("join data", json.dumps(data))
+
+            reply_body = "{\"id\":%i,\"x\":%d,\"y\":%d}" % (newPlayer.id, newPlayer.x, newPlayer.y)
 
         elif self.path == "/leave":
             self.send_response(200, "Understood")
             self.end_headers()
 
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            print("leave data", json.dumps(data))
             gameObject.removePlayer(data["id"])
 
         else:
