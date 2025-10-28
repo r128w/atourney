@@ -2,19 +2,7 @@
 <html>
     <head>
         <title>Aura Tourney</title>
+        <script src="main.js"></script>
+        <link rel="stylesheet" href="main.css">
     </head>
-    <body>
-        test page<br>
-        Random number: <span id="output">0</span>
-        <script>
-            setInterval(()=>{
-                const req = new XMLHttpRequest()
-                req.open("POST", "/rand")
-                req.onload = ()=>{
-                    document.getElementById('output').textContent = req.responseText
-                }
-                req.send()
-            }, 1000)
-        </script>
-    </body>
 </html>
