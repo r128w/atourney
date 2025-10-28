@@ -1,14 +1,15 @@
 import http.server
 import socketserver
+import socket
 
 import random
+
+import json
 
 from game.main import Game
 
 import signal
 import sys
-
-PORT = 8000
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     
@@ -36,8 +37,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200, "Understood")
             self.end_headers()
 
-            data = self.rfile.read(int(self.headers['Content-Length']))
-            print(data)
+            data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            print("player %s, x:%i, y:%i" % (data["name"], data["x"], data["y"]))
+
         else:
             self.send_response(501, "Not a valid POST")
             self.end_headers()
@@ -46,13 +48,35 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         return
 
+
+# this file is always a main method; never import it :)
+
 gameObject = Game()
 gameObject.startLoop()
 
-# this file is always a main method :) never import it
+
+# network ""settings""
+PORT = 8000
+
+
+def get_local_ipv4_address(): # google ai overview
+    try:
+        # Create a temporary socket to connect to an external address (Google's DNS server)
+        # This connection is not actually established, but it forces the OS to
+        # determine the local IP address that would be used for such a connection.
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip_address = s.getsockname()[0]
+        s.close()
+        return local_ip_address
+    except socket.error:
+        # Fallback if connection attempt fails (e.g., no network connection)
+        return "127.0.0.1"  # Return loopback address as a default
+
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
-print("serving at port", PORT)
+host, port = httpd.socket.getsockname()
+print("hosting at %s:%s" % (get_local_ipv4_address(), PORT))
 
 signal.signal(signal.SIGINT, signal.default_int_handler)
 
