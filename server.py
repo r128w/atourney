@@ -71,11 +71,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             gameObject.removePlayer(data["id"])
 
+            reply_body = "" # send nothing (since the client is disconnected)
+
         else:
             self.send_response(501, "Not a valid POST")
             self.end_headers()
 
-        self.wfile.write(reply_body.encode('utf-8'))
+        if not reply_body == "":
+            self.wfile.write(reply_body.encode('utf-8'))
 
         return
 
@@ -92,17 +95,15 @@ PORT = 8000
 
 def get_local_ipv4_address(): # google ai overview
     try:
-        # Create a temporary socket to connect to an external address (Google's DNS server)
-        # This connection is not actually established, but it forces the OS to
-        # determine the local IP address that would be used for such a connection.
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
         local_ip_address = s.getsockname()[0]
         s.close()
         return local_ip_address
     except socket.error:
-        # Fallback if connection attempt fails (e.g., no network connection)
-        return "127.0.0.1"  # Return loopback address as a default
+        return "127.0.0.1"
+
+
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 

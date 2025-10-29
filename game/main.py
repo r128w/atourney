@@ -4,8 +4,10 @@ from game.player import Player
 
 import time
 
+import json
 
-playerTimeout = 10
+
+playerTimeout = 5
 
 class Game:
 
@@ -17,7 +19,13 @@ class Game:
 
     def getState(self): # python methods always take the object itself as first arg??? why
         # self.iterate()
-        output = "Frames: %i" % self.framecount
+        output = "============================== Frames: %i" % self.framecount
+
+        for obj in self.players:
+            newLine = "\n%s | " % obj.name
+            newLine += json.dumps(obj.__dict__)
+            output += newLine
+
         return output
 
     def __init__(self):
@@ -26,10 +34,13 @@ class Game:
 
     def iterate(self, dtime):
         self.framecount += 1
+        if self.framecount % 30 == 0:
+            print("Frame %i" % self.framecount)
         curTime = time.time()
         for obj in self.players:
             obj.iterate(dtime)
             if curTime - obj.lastUpdate > playerTimeout:
+                print("%i TIMEOUT ==========" % obj.id)
                 self.removePlayer(obj.id)
         return
 
@@ -61,8 +72,8 @@ class Game:
 
         p.lastUpdate = time.time()
 
-        p.x = newState["x"]
-        p.y = newState["y"]
+        p.x = newState["x"] # only these attributes are copied over
+        p.y = newState["y"] # meaning that isLead is not getting sent from one client to another
         p.a = newState["a"]
         p.s = newState["s"]
         p.d = newState["d"]

@@ -30,7 +30,4 @@ class Player:
         if self.d:
             self.x += speed*dtime
 
-
-        print(self.x, self.a, self.d)
-
         return
