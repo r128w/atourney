@@ -16,11 +16,17 @@ let players = []
 const sync = {
     username:"Anonymous",
     timer:null,
-    interval:4000,
+    interval:1000,
     id:null,
     update:async function(){
-        console.log(sync.id)
-        await sendPost("/player", {p:players[0], id:sync.id})
+        // console.log(sync.id)
+        let res = await sendPost("/player", {p:players[0], id:sync.id})
+
+        if(res == "join up cuh"){// if not already connected
+            console.log('not connected yet')
+            sync.connect()
+        }
+
     },
     connect:async function(){
 

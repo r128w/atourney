@@ -2,6 +2,11 @@
 from game.timer import setInterval
 from game.player import Player
 
+import time
+
+
+playerTimeout = 10
+
 class Game:
 
     framecount = 0
@@ -19,8 +24,13 @@ class Game:
         self.framecount = 0
         return
 
-    def iterate(self):
+    def iterate(self, dtime):
         self.framecount += 1
+        curTime = time.time()
+        for obj in self.players:
+            obj.iterate(dtime)
+            if curTime - obj.lastUpdate > playerTimeout:
+                self.removePlayer(obj.id)
         return
 
     def _isPresent(self, id):
@@ -46,14 +56,30 @@ class Game:
         return newPlayer
 
     def updatePlayer(self, id, newState):
+
+        p = self.getPlayer(id)
+
+        p.lastUpdate = time.time()
+
+        p.x = newState["x"]
+        p.y = newState["y"]
+        p.a = newState["a"]
+        p.s = newState["s"]
+        p.d = newState["d"]
+        p.w = newState["w"]
+
         return
 
     def removePlayer(self, id):
-        print(" ======= ======= ======= DISCONNECT %i" % id)
-        self.players.pop(int(id))
+        if self._isPresent(id):
+            print(" ======= ======= ======= DISCONNECT %i" % id)
+            self.players.pop(int(id))
+        else:
+            print(" ======= Attempted DISCONNECT %i ======= Not present" % id)
         return
 
     def startLoop(self):
         # 30fps
-        self.interval = setInterval(self.iterate, 1/30)
+        fps = 30
+        self.interval = setInterval(lambda: self.iterate(1/fps), 1/fps)
         return

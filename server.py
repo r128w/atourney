@@ -36,14 +36,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             reply_body = gameObject.getState()
 
         elif self.path == "/player":
-            self.send_response(200, "Understood")
-            self.end_headers()
 
-            
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            
+            if not gameObject._isPresent(data["id"]):
+                self.send_response(401, "Not joined")
+                reply_body = "join up cuh"
+            else:
+                self.send_response(200, "Understood")
+                print("player data", data["id"], data["p"])
+                gameObject.updatePlayer(data["id"], data["p"])
 
-            print("player data", json.dumps(data))
-
+            self.end_headers()
+            
             # print("player %s (%i), x:%i, y:%i" % (data["p"]["name"], data["id"], data["p"]["x"], data["p"]["y"]))
 
         elif self.path == "/join":
@@ -63,6 +68,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
             print("leave data", json.dumps(data))
+
             gameObject.removePlayer(data["id"])
 
         else:
