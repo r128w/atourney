@@ -19,7 +19,7 @@ class Game:
 
     def getState(self): # python methods always take the object itself as first arg??? why
         # self.iterate()
-        output = "============================== Frames: %i" % self.framecount
+        output = "Frames: %i" % self.framecount
 
         for obj in self.players:
             newLine = "\n%s | " % obj.name
@@ -34,14 +34,25 @@ class Game:
 
     def iterate(self, dtime):
         self.framecount += 1
-        if self.framecount % 30 == 0:
-            print("Frame %i" % self.framecount)
-        curTime = time.time()
+        if self.framecount % 100 == 0:
+            print("====== ------ ====== Game Frame %i" % self.framecount)
+        
         for obj in self.players:
             obj.iterate(dtime)
+        
+        curTime = time.time()
+        i = 0
+        while i < len(self.players):
+            obj = self.players[i]
             if curTime - obj.lastUpdate > playerTimeout:
                 print("%i TIMEOUT ==========" % obj.id)
-                self.removePlayer(obj.id)
+                try:
+                    self.removePlayer(obj.id)
+                except:
+                    print("Remove error ========")
+            else:
+                i+=1
+        
         return
 
     def _isPresent(self, id):
@@ -84,7 +95,7 @@ class Game:
     def removePlayer(self, id):
         if self._isPresent(id):
             print(" ======= ======= ======= DISCONNECT %i" % id)
-            self.players.pop(int(id))
+            self.players.remove(self.getPlayer(id))
         else:
             print(" ======= Attempted DISCONNECT %i ======= Not present" % id)
         return

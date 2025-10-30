@@ -12,6 +12,11 @@ import signal
 import sys
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+
+    def log_message(self, format, *args): # no request logging
+        # if not "POST" in args:
+        #     http.server.SimpleHTTPRequestHandler.log_message(self, format, *args)
+        return
     
     def do_POST(self):
         # print("post req for %s" % self.path)
@@ -44,7 +49,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 reply_body = "join up cuh"
             else:
                 self.send_response(200, "Understood")
-                print("player data", data["id"], data["p"])
+                if random.random() > 0.95: # dont get most of these
+                    print(" -- player data", data["id"])
                 gameObject.updatePlayer(data["id"], data["p"])
 
             self.end_headers()
@@ -105,12 +111,14 @@ def get_local_ipv4_address(): # google ai overview
 
 
 
+signal.signal(signal.SIGINT, signal.default_int_handler)
+
+
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
 host, port = httpd.socket.getsockname()
 print("hosting at %s:%s" % (get_local_ipv4_address(), PORT))
 
-signal.signal(signal.SIGINT, signal.default_int_handler)
 
 
 try:
