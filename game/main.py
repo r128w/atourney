@@ -17,6 +17,8 @@ class Game:
 
     interval = None
 
+    lastUpdate = time.time()
+
     def getState(self): # python methods always take the object itself as first arg??? why
         # self.iterate()
         output = "Frames: %i" % self.framecount
@@ -32,10 +34,15 @@ class Game:
         self.framecount = 0
         return
 
-    def iterate(self, dtime):
+    def iterate(self):
+
+        rn = time.time()
+        dtime = rn - self.lastUpdate
+        self.lastUpdate = rn
+
         self.framecount += 1
         if self.framecount % 100 == 0:
-            print("====== ------ ====== Game Frame %i" % self.framecount)
+            print("== -- == Frame %i" % self.framecount)
         
         for obj in self.players:
             obj.iterate(dtime)
@@ -45,7 +52,7 @@ class Game:
         while i < len(self.players):
             obj = self.players[i]
             if curTime - obj.lastUpdate > playerTimeout:
-                print("%i TIMEOUT ==========" % obj.id)
+                print("  ======== %i TIMEOUT" % obj.id)
                 try:
                     self.removePlayer(obj.id)
                 except:
@@ -103,5 +110,5 @@ class Game:
     def startLoop(self):
         # 30fps
         fps = 30
-        self.interval = setInterval(lambda: self.iterate(1/fps), 1/fps)
+        self.interval = setInterval(self.iterate, 1/fps)
         return

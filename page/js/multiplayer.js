@@ -37,7 +37,7 @@ const sync = {
         for(var i = 1; i < lines.length; i ++){
             lines[i] = JSON.parse(lines[i].split("|")[1]) // for sure breaks if playernames are weird
         }
-        console.log(res)
+        // console.log(res)
         for(var i = 1; i < lines.length; i ++){// for all lines that are not the inital frame counter
 
             if(lines[i].id == sync.id){// if this line describes the client

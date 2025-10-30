@@ -49,7 +49,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 reply_body = "join up cuh"
             else:
                 self.send_response(200, "Understood")
-                if random.random() > 0.95: # dont get most of these
+                if random.random() > 0.98: # dont get most of these
                     print(" -- player data", data["id"])
                 gameObject.updatePlayer(data["id"], data["p"])
 
@@ -64,7 +64,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
             newPlayer = gameObject.addPlayer(data["username"])
 
-            print("join data", json.dumps(data))
+            # print("join data", json.dumps(data))
 
             reply_body = "{\"id\":%i,\"x\":%d,\"y\":%d}" % (newPlayer.id, newPlayer.x, newPlayer.y)
 
@@ -73,7 +73,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
 
             data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            print("leave data", json.dumps(data))
+            # print("leave data", json.dumps(data))
 
             gameObject.removePlayer(data["id"])
 
@@ -117,7 +117,11 @@ signal.signal(signal.SIGINT, signal.default_int_handler)
 httpd = socketserver.TCPServer(("", PORT), Handler)
 
 host, port = httpd.socket.getsockname()
-print("hosting at %s:%s" % (get_local_ipv4_address(), PORT))
+
+print ("*** ======= STARTING ======= ***")
+
+print("Hosting at: %s:%s" % (get_local_ipv4_address(), PORT))
+print("Or localhost:%i" % PORT)
 
 
 
