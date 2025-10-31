@@ -15,18 +15,34 @@ class Game:
 
     players = []
 
+    balls = []
+
     interval = None
 
     lastUpdate = time.time()
 
     def getState(self): # python methods always take the object itself as first arg??? why
-        # self.iterate()
+       
+        # structure of state:
+        # Frame: <frame #>
+        # <player name> | <player data json>
+        # ... for all players
+        # END PLAYERS
+        # <ball 1 data json>
+        # ...
+        # <ball n data json>
+        # END BALLS
+
+
+
         output = "Frames: %i" % self.framecount
 
         for obj in self.players:
             newLine = "\n%s | " % obj.name
             newLine += json.dumps(obj.__dict__)
             output += newLine
+
+        output += "\nEND PLAYERS"
 
         return output
 
@@ -41,7 +57,7 @@ class Game:
         self.lastUpdate = rn
 
         self.framecount += 1
-        if self.framecount % 100 == 0:
+        if self.framecount % 300 == 0:
             print("== -- == Frame %i" % self.framecount)
         
         for obj in self.players:
@@ -52,11 +68,11 @@ class Game:
         while i < len(self.players):
             obj = self.players[i]
             if curTime - obj.lastUpdate > playerTimeout:
-                print("  ======== %i TIMEOUT" % obj.id)
+                print("  ======== %i TIMEOUT (%i seconds)" % (obj.id, playerTimeout))
                 try:
                     self.removePlayer(obj.id)
                 except:
-                    print("Remove error ========")
+                    print("   == !! == ERROR ON PLAYER REMOVE")
             else:
                 i+=1
         

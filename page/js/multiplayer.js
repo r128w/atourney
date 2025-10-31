@@ -19,10 +19,12 @@ const sync = {
     timer:null,
     interval:40,
     id:null,
+
     update:async function(){
         sync.sendUpdate()
         sync.requestUpdate()
     },
+
     sendUpdate:async function(){
         let res = await sendPost("/player", {p:players[0], id:sync.id})
         if(res == "join up cuh"){// if not already connected
@@ -30,41 +32,71 @@ const sync = {
             sync.connect()
         }
     },
-    requestUpdate: async function(){
+
+    requestUpdate: async function(){ // get information of players
         let res = await sendPost("/state")
         let lines = res.split('\n')// def breaks if playernames have newlines or etc
+        // console.log(lines)
+        playerdata = []
+        balldata = []
 
-        for(var i = 1; i < lines.length; i ++){
-            lines[i] = JSON.parse(lines[i].split("|")[1]) // for sure breaks if playernames are weird
+        var i = 1;
+
+        for(; i < lines.length; i ++){
+            if(lines[i] == "END PLAYERS"){i++;break} // breaks if playernames etc..... :(
+            // console.log(lines[i])
+            playerdata.push(JSON.parse(lines[i].split("|")[1])) // for sure breaks if playernames are weird
         }
-        // console.log(res)
-        for(var i = 1; i < lines.length; i ++){// for all lines that are not the inital frame counter
 
-            if(lines[i].id == sync.id){// if this line describes the client
+        for(; i < lines.length; i ++){
+            if(lines[i] == "END BALLS"){break}
+            balldata.push(JSON.parse(lines[i]))
+        }
 
+        updated = []
+
+        for(var ii = 0; ii < playerdata.length; ii ++){// for all lines that are not the inital frame counter
+
+            if(playerdata[ii].id == sync.id){// if this line describes the client
                 // ignore for now
                 continue
             }
 
             let thisp
-            for(var ii = 0; ii < players.length; ii ++){
-                if(players[ii].id == lines[i].id){
-                    thisp = players[ii]
+            for(var iii = 0; iii < players.length; iii ++){
+                if(players[iii].id == playerdata[ii].id){
+                    thisp = players[iii]
                 }
             }
+            
             if(!thisp){
                 players.push(new Player())
                 thisp=players[players.length-1]
             }
             
-            
-            console.log(lines[i])
-            Object.keys(lines[i]).forEach((v)=>{
-                thisp[v] = lines[i][v]
+            Object.keys(playerdata[ii]).forEach((v)=>{
+                thisp[v] = playerdata[ii][v]
             })
-            
 
+            updated.push(playerdata[ii].id)
         }
+
+        // let ii = 0
+        let iterate = 0
+
+        let t = 0
+
+        // get rid of players which are not updated
+        while(iterate < players.length && t < 100){
+            t++
+            // console.log(iterate)
+            if(players[iterate].id == sync.id){iterate++;continue}
+            for(var iiterate = 0; iiterate < updated.length; iiterate ++){
+                if(updated[iiterate] == players[iterate].id){iterate++;continue}
+            }
+            players.splice(iterate, 1)// remove player which was not updated or is self
+        }
+
     },
     connect:async function(){
 

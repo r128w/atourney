@@ -8,6 +8,8 @@ import json
 
 from game.main import Game
 
+
+
 import signal
 import sys
 
@@ -41,17 +43,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             reply_body = gameObject.getState()
 
         elif self.path == "/player":
-
-            data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            
-            if not gameObject._isPresent(data["id"]):
-                self.send_response(401, "Not joined")
-                reply_body = "join up cuh"
-            else:
-                self.send_response(200, "Understood")
-                if random.random() > 0.98: # dont get most of these
-                    print(" -- player data", data["id"])
-                gameObject.updatePlayer(data["id"], data["p"])
+            readstuff = self.rfile.read(int(self.headers['Content-Length']))
+            try:
+                data = json.loads(readstuff)
+                
+                if not gameObject._isPresent(data["id"]):
+                    self.send_response(401, "Not joined")
+                    reply_body = "join up cuh"
+                else:
+                    self.send_response(200, "Understood")
+                    if random.random() > 0.99: # dont get most of these
+                        print(" -- player data", data["id"])
+                    gameObject.updatePlayer(data["id"], data["p"])
+            except:
+                print("   ======= PLAYER UPDATE ERROR")
+                print(readstuff)
 
             self.end_headers()
             
