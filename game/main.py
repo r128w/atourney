@@ -33,17 +33,20 @@ class Game:
         # <ball n data json>
         # END BALLS
 
-
-
         output = "Frames: %i" % self.framecount
 
         for obj in self.players:
-            newLine = "\n%s | " % obj.name
-            newLine += json.dumps(obj.__dict__)
+            newLine = "\n%s | " % obj.id
+            newLine += json.dumps(obj.toDict())
             output += newLine
 
         output += "\nEND PLAYERS"
 
+        for obj in self.balls:
+            output += "\n" + json.dumps(obj.toDict())
+
+        output +="\nEND BALLS"
+        
         return output
 
     def __init__(self):
@@ -113,11 +116,13 @@ class Game:
         p.d = newState["d"]
         p.w = newState["w"]
 
+        print("updated", p)
+
         return
 
     def removePlayer(self, id):
         if self._isPresent(id):
-            print(" ======= ======= ======= DISCONNECT %i" % id)
+            print(" ======= ======= ======= DISCONNECT %i: %s" % (id, self.getPlayer(id).name))
             self.players.remove(self.getPlayer(id))
         else:
             print(" ======= Attempted DISCONNECT %i ======= Not present" % id)

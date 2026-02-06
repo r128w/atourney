@@ -1,7 +1,8 @@
 class Player {
 
-    constructor(name, x, y){
+    constructor(id, name, x, y){
         this.name = name; this.x = x; this.y = y
+        this.id = id
 
         this.isLead = false // set this manually :) not a constructor thing
     }

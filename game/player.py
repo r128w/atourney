@@ -31,3 +31,17 @@ class Player:
             self.x += speed*dtime
 
         return
+
+    def toDict(self):
+        return {
+            "x": self.x,
+            "y": self.y,
+            "w": self.w,
+            "a": self.a,
+            "s": self.s,
+            "d": self.d,
+            "id": self.id
+        }
+
+    def __str__(self):
+        return f"id:{self.id}, x:{self.x}, y:{self.y}"

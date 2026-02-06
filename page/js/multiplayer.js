@@ -11,7 +11,6 @@ async function sendPost(url, data=null){
 }
 
 let players = []
-// TODO load players from /state POST
 // players[0] is the client's player
 
 const sync = {
@@ -34,6 +33,7 @@ const sync = {
     },
 
     requestUpdate: async function(){ // get information of players
+
         let res = await sendPost("/state")
         let lines = res.split('\n')// def breaks if playernames have newlines or etc
         // console.log(lines)
@@ -66,12 +66,13 @@ const sync = {
             for(var iii = 0; iii < players.length; iii ++){
                 if(players[iii].id == playerdata[ii].id){
                     thisp = players[iii]
+                    break
                 }
             }
             
             if(!thisp){
                 players.push(new Player())
-                thisp=players[players.length-1]
+                thisp = players[players.length-1]
             }
             
             Object.keys(playerdata[ii]).forEach((v)=>{
@@ -105,7 +106,7 @@ const sync = {
         let joinData = JSON.parse(await sendPost("/join", {username:sync.username}))
         // console.log(joinData)
         sync.id = joinData.id
-        players.push(new Player(this.username, joinData.x, joinData.y))
+        players.push(new Player(joinData.id, this.username, joinData.x, joinData.y))
         players[0].isLead = true
 
         sync.timer = setInterval(sync.update, sync.interval)

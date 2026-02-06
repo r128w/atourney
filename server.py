@@ -21,11 +21,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return
     
     def do_POST(self):
-        # print("post req for %s" % self.path)
-
 
         # python 3.9 -> no match case statement :(
 
+        # no cors, not necessary
         # self.send_header("Access-Control-Allow-Origin", "*")
 
         reply_body = "nothing"
@@ -52,8 +51,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     reply_body = "join up cuh"
                 else:
                     self.send_response(200, "Understood")
-                    if random.random() > 0.99: # dont get most of these
-                        print(" -- player data", data["id"])
+                    # if random.random() > 0.9: # dont log most of these
+                    print(" -- player data", data["id"])
                     gameObject.updatePlayer(data["id"], data["p"])
             except:
                 print("   ======= PLAYER UPDATE ERROR")
@@ -102,7 +101,7 @@ gameObject.startLoop()
 
 
 # network ""settings""
-PORT = 8000
+PORT = 6767
 
 
 def get_local_ipv4_address(): # google ai overview
@@ -136,5 +135,5 @@ try:
 except KeyboardInterrupt:
     print("Closing")
     gameObject.interval.cancel()
-    httpd.shutdown()
+    httpd.server_close()
     sys.exit()
