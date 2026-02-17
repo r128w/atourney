@@ -101,7 +101,7 @@ gameObject.startLoop()
 
 
 # network ""settings""
-PORT = 6767
+PORT = 8000
 
 
 def get_local_ipv4_address(): # google ai overview
