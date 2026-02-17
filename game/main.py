@@ -116,7 +116,7 @@ class Game:
         p.d = newState["d"]
         p.w = newState["w"]
 
-        print("updated", p)
+        # print("updated", p)
 
         return
 

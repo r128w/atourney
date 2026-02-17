@@ -52,7 +52,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 else:
                     self.send_response(200, "Understood")
                     # if random.random() > 0.9: # dont log most of these
-                    print(" -- player data", data["id"])
+                    #     print(" -- player data", data["id"])
                     gameObject.updatePlayer(data["id"], data["p"])
             except:
                 print("   ======= PLAYER UPDATE ERROR")
