@@ -1,11 +1,13 @@
 
 from game.timer import setInterval
 from game.player import Player
+from game.ball import Ball
 
 import time
 
 import json
 
+import random
 
 playerTimeout = 5
 
@@ -17,6 +19,9 @@ class Game:
 
     balls = []
 
+    width = 640
+    height = 360
+
     interval = None
 
     lastUpdate = time.time()
@@ -24,7 +29,7 @@ class Game:
     def getState(self): # python methods always take the object itself as first arg??? why
        
         # structure of state:
-        # Frame: <frame #>
+        # Gamedata | <game data json>
         # <player name> | <player data json>
         # ... for all players
         # END PLAYERS
@@ -33,7 +38,11 @@ class Game:
         # <ball n data json>
         # END BALLS
 
-        output = "Frames: %i" % self.framecount
+        output = "Gamedata | " + json.dumps({
+                "frame":self.framecount, 
+                "width":self.width,
+                "height":self.height
+            })
 
         for obj in self.players:
             newLine = "\n%s | " % obj.id
@@ -65,7 +74,7 @@ class Game:
         
         for obj in self.players:
             obj.iterate(dtime)
-        
+
         curTime = time.time()
         i = 0
         while i < len(self.players):
@@ -78,6 +87,12 @@ class Game:
                     print("   == !! == ERROR ON PLAYER REMOVE")
             else:
                 i+=1
+
+        for obj in self.balls:
+            obj.iterate(dtime)
+
+        if random.random() > 0.99:
+            self.balls.append(Ball(random.random()*self.width, random.random()*self.height, 0, 0))
         
         return
 
@@ -133,3 +148,9 @@ class Game:
         fps = 30
         self.interval = setInterval(self.iterate, 1/fps)
         return
+
+
+    def clearBalls(self):
+        for obj in self.balls:
+            if obj.age > 100:
+                self.balls.remove(obj)

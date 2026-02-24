@@ -1,7 +1,8 @@
 const canvas = {
-    init:function(){
+    init:function(game){
         this.ele = document.getElementById('main-canvas')
         this.ctx = this.ele.getContext('2d')
+        this.game = game
 
         this.render()
     },
@@ -18,11 +19,11 @@ const canvas = {
         for(var i = 0; i < players.length; i ++){
             players[i].render(this.ctx)
         }
-    }
+
+        for(var i = 0; i < game.balls.length; i ++){
+            this.game.balls[i].render(this.ctx)
+        }
+
+    },
+    game:null
 }
-
-
-// all this only called after domcontentloaded, when this script is added to the page
-canvas.init()
-
-window.addEventListener('resize', canvas.render)

@@ -1,14 +1,6 @@
-const scripts = ["input", "player", "multiplayer", "canvas", "game"]
-
 document.addEventListener('DOMContentLoaded', ()=>{
 
-    // add scripts
-    for(var i = 0; i < scripts.length; i ++){
-        const s = document.createElement('script')
-        s.src = `./page/js/${scripts[i]}.js`
-        s.setAttribute("synthetic", "true")
-        document.head.appendChild(s)
-    }
+    
 
     // add elements
     const c = document.createElement('canvas')
@@ -17,5 +9,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     c.className = "center"
 
     document.body.appendChild(c)
+
+
+    const fps = 60
+    game.timer = setInterval(game.iterate, 1000/fps)
+    
+    canvas.init(game)
+
+    window.addEventListener('resize', canvas.render)
 
 })

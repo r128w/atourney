@@ -40,6 +40,9 @@ const sync = {
         playerdata = []
         balldata = []
 
+        let gamedata = JSON.parse(lines[0].split(" | ")[1])
+
+
         var i = 1;
 
         for(; i < lines.length; i ++){
@@ -82,6 +85,8 @@ const sync = {
             updated.push(playerdata[ii].id)
         }
 
+        game.updateSelf(gamedata, balldata)
+
         // let ii = 0
         let iterate = 0
 
@@ -101,12 +106,12 @@ const sync = {
     },
     connect:async function(){
 
-        clearTimeout(sync.timer)
+        clearInterval(sync.timer)
 
         let joinData = JSON.parse(await sendPost("/join", {username:sync.username}))
         // console.log(joinData)
         sync.id = joinData.id
-        players.push(new Player(joinData.id, this.username, joinData.x, joinData.y))
+        players.push(new Player(joinData.id, sync.username, joinData.x, joinData.y))
         players[0].isLead = true
 
         sync.timer = setInterval(sync.update, sync.interval)
@@ -115,7 +120,7 @@ const sync = {
         await sendPost("/leave", {id:sync.id})
         // console.log(JSON.stringify({id:this.id}))
         sync.id = null
-        clearTimeout(sync.timer)
+        clearInterval(sync.timer)
     }
 }
 

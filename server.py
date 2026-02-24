@@ -54,8 +54,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     # if random.random() > 0.9: # dont log most of these
                     #     print(" -- player data", data["id"])
                     gameObject.updatePlayer(data["id"], data["p"])
-            except:
+            except Exception as e:
                 print("   ======= PLAYER UPDATE ERROR")
+                print(e)
                 print(readstuff)
 
             self.end_headers()
@@ -101,7 +102,7 @@ gameObject.startLoop()
 
 
 # network ""settings""
-PORT = 8000
+PORT = 6767
 
 
 def get_local_ipv4_address(): # google ai overview
