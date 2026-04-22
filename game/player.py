@@ -8,6 +8,9 @@ class Player:
     a = False
     s = False
     d = False
+    r = 0
+    vx = 0
+    vy = 0
 
 
     def __init__(self, id, name, x, y,):
@@ -40,6 +43,9 @@ class Player:
             "a": self.a,
             "s": self.s,
             "d": self.d,
+            "r": self.r,
+            "vx": self.vx,
+            "vy": self.vy,
             "id": self.id
         }
 

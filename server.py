@@ -2,6 +2,9 @@ import http.server
 import socketserver
 import socket
 
+
+import psutil
+
 import random
 
 import json
@@ -102,7 +105,7 @@ gameObject.startLoop()
 
 
 # network ""settings""
-PORT = 6767
+PORT_BASE = 6767
 
 
 def get_local_ipv4_address(): # google ai overview
@@ -117,17 +120,25 @@ def get_local_ipv4_address(): # google ai overview
 
 
 
+
 signal.signal(signal.SIGINT, signal.default_int_handler)
 
+port = PORT_BASE
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
+while port < PORT_BASE + 67:
+    try:
+        httpd = socketserver.TCPServer(("", port), Handler)
+    except OSError:
+        port+=1
+        continue
+    break
 
 host, port = httpd.socket.getsockname()
 
 print ("*** ======= STARTING ======= ***")
 
-print("Hosting at: %s:%s" % (get_local_ipv4_address(), PORT))
-print("Or localhost:%i" % PORT)
+print("Hosting at: %s:%s" % (get_local_ipv4_address(), port))
+print("Or localhost:%i" % port)
 
 
 

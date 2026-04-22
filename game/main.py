@@ -19,8 +19,8 @@ class Game:
 
     balls = []
 
-    width = 640
-    height = 360
+    width = 1280
+    height = 720
 
     interval = None
 
@@ -60,6 +60,15 @@ class Game:
 
     def __init__(self):
         self.framecount = 0
+
+        for i in range(70):
+            self.balls.append(
+                Ball(
+                    random.random()*self.width,
+                    random.random()*self.height,
+                    100*(random.random()-0.5),
+                    100*(random.random()-0.5),
+                    self))
         return
 
     def iterate(self):
@@ -91,8 +100,9 @@ class Game:
         for obj in self.balls:
             obj.iterate(dtime)
 
-        if random.random() > 0.99:
-            self.balls.append(Ball(random.random()*self.width, random.random()*self.height, 0, 0))
+        # ball spawning
+        # if random.random() > 0.99:
+        #     self.balls.append(Ball(random.random()*self.width, random.random()*self.height, 0, 0))
         
         return
 
@@ -130,6 +140,7 @@ class Game:
         p.s = newState["s"]
         p.d = newState["d"]
         p.w = newState["w"]
+        p.r = newState["r"]
 
         # print("updated", p)
 
