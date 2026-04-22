@@ -35,7 +35,7 @@ class Ball:
             self.x = 0
         if self.y > self.gameObject.height:
             self.vy *= -1
-            self.y= self.gameObject.wiheightdth
+            self.y = self.gameObject.height
         if self.y < 0:
             self.vy *= -1
             self.y = 0

@@ -16,9 +16,10 @@ class Player {
     }
 
     render(ctx){
-        // ctx.fillStyle = "#ffffff"
-        // ctx.fillRect(this.x, this.y, this.width, this.height)
         canvas.renderSpriteRot(canvas.sprites[0], this.x+this.width/2, this.y+this.height/2, this.r, this.width/2)
+
+        // ctx.fillStyle = "#ffffff"
+        // ctx.fillRect(this.x, this.y, 2, 2)
     }
 
     iterate(dtime){
@@ -40,14 +41,14 @@ class Player {
 
         forward *= 0.99;
         // if(Math.abs(forward) < 3 && Math.abs(lateral) < 1){lateral *= Math.exp(0.08*Math.abs(lateral)) - 0.33}
-        lateral *= (0.99-0.2*Math.exp(-1*Math.abs(lateral)));
+        lateral *= (0.98-0.5*Math.exp(-0.05*Math.abs(lateral)));
 
 
-        const speed = 0.05
-        const turnspeed = 0.015 * forward
+        const speed = 3
+        const turnspeed = 0.03 * forward
 
-        if(this.a){this.r -= turnspeed}
-        if(this.d){this.r += turnspeed}
+        if(this.a){this.r -= turnspeed * dtime}
+        if(this.d){this.r += turnspeed * dtime}
 
         if(this.w){
             forward += speed
@@ -61,8 +62,8 @@ class Player {
         this.vx = dx * forward - dy * lateral
         this.vy = dy * forward + dx * lateral
 
-        this.x += this.vx
-        this.y += this.vy
+        this.x += this.vx * dtime
+        this.y += this.vy * dtime
 
     }
 
